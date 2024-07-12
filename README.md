@@ -1,2 +1,2 @@
 # general
- A repository for customized theme
+ A repository for customized wordpress theme
