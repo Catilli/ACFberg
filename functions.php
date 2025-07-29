@@ -2,3 +2,109 @@
 
 // Include functions files
 require_once get_template_directory() . '/functions/disable-comments.php';
+
+/**
+ * Enqueue scripts and styles
+ */
+function acfberg_enqueue_scripts() {
+    // Enqueue Tailwind CSS
+    wp_enqueue_style(
+        'acfberg-tailwind',
+        get_template_directory_uri() . '/assets/css/style.css',
+        array(),
+        filemtime(get_template_directory() . '/assets/css/style.css')
+    );
+    
+    // Enqueue theme's main style.css for WordPress theme info
+    wp_enqueue_style(
+        'acfberg-style',
+        get_stylesheet_uri(),
+        array('acfberg-tailwind'),
+        filemtime(get_stylesheet_directory() . '/style.css')
+    );
+}
+add_action('wp_enqueue_scripts', 'acfberg_enqueue_scripts');
+
+/**
+ * Add theme support
+ */
+function acfberg_theme_setup() {
+    // Add default posts and comments RSS feed links to head
+    add_theme_support('automatic-feed-links');
+    
+    // Let WordPress manage the document title
+    add_theme_support('title-tag');
+    
+    // Enable support for Post Thumbnails on posts and pages
+    add_theme_support('post-thumbnails');
+    
+    // Add support for responsive embeds
+    add_theme_support('responsive-embeds');
+    
+    // Add support for custom logo
+    add_theme_support('custom-logo', array(
+        'height'      => 100,
+        'width'       => 400,
+        'flex-height' => true,
+        'flex-width'  => true,
+    ));
+    
+    // Add support for HTML5 markup
+    add_theme_support('html5', array(
+        'search-form',
+        'comment-form',
+        'comment-list',
+        'gallery',
+        'caption',
+        'style',
+        'script',
+    ));
+    
+    // Add support for Gutenberg wide and full-width blocks
+    add_theme_support('align-wide');
+    
+    // Add support for custom background
+    add_theme_support('custom-background');
+    
+    // Add support for custom header
+    add_theme_support('custom-header');
+    
+    // Add support for editor styles
+    add_theme_support('editor-styles');
+    
+    // Add support for editor color palette
+    add_theme_support('editor-color-palette', array(
+        array(
+            'name'  => __('Primary', 'acfberg'),
+            'slug'  => 'primary',
+            'color' => '#3b82f6',
+        ),
+        array(
+            'name'  => __('Secondary', 'acfberg'),
+            'slug'  => 'secondary',
+            'color' => '#64748b',
+        ),
+        array(
+            'name'  => __('Dark', 'acfberg'),
+            'slug'  => 'dark',
+            'color' => '#1e293b',
+        ),
+        array(
+            'name'  => __('Light', 'acfberg'),
+            'slug'  => 'light',
+            'color' => '#f8fafc',
+        ),
+    ));
+}
+add_action('after_setup_theme', 'acfberg_theme_setup');
+
+/**
+ * Register navigation menus
+ */
+function acfberg_register_menus() {
+    register_nav_menus(array(
+        'primary' => __('Primary Menu', 'acfberg'),
+        'footer'  => __('Footer Menu', 'acfberg'),
+    ));
+}
+add_action('init', 'acfberg_register_menus');

@@ -1,0 +1,147 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* WordPress Theme Base Styles */
+@layer base {
+  /* Reset some WordPress defaults */
+  .wp-block {
+    max-width: none;
+  }
+  
+  /* Ensure proper spacing for WordPress content */
+  .entry-content {
+    @apply prose prose-lg max-w-none;
+  }
+  
+  /* Style WordPress admin bar */
+  .admin-bar {
+    @apply top-0;
+  }
+  
+  /* Basic typography for WordPress content */
+  .entry-content h1,
+  .entry-content h2,
+  .entry-content h3,
+  .entry-content h4,
+  .entry-content h5,
+  .entry-content h6 {
+    @apply font-bold text-gray-900 mb-4;
+  }
+  
+  .entry-content h1 { @apply text-4xl; }
+  .entry-content h2 { @apply text-3xl; }
+  .entry-content h3 { @apply text-2xl; }
+  .entry-content h4 { @apply text-xl; }
+  .entry-content h5 { @apply text-lg; }
+  .entry-content h6 { @apply text-base; }
+  
+  .entry-content p {
+    @apply mb-4 text-gray-700 leading-relaxed;
+  }
+  
+  .entry-content ul,
+  .entry-content ol {
+    @apply mb-4 pl-6;
+  }
+  
+  .entry-content ul {
+    @apply list-disc;
+  }
+  
+  .entry-content ol {
+    @apply list-decimal;
+  }
+  
+  .entry-content li {
+    @apply mb-2;
+  }
+  
+  .entry-content a {
+    @apply text-blue-600 hover:text-blue-800 underline;
+  }
+  
+  .entry-content blockquote {
+    @apply border-l-4 border-gray-300 pl-4 italic text-gray-600 mb-4;
+  }
+  
+  .entry-content img {
+    @apply max-w-full h-auto rounded-lg shadow-md;
+  }
+}
+
+/* Custom Components */
+@layer components {
+  /* Button styles */
+  .btn {
+    @apply inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500;
+  }
+  
+  .btn-secondary {
+    @apply bg-gray-600 hover:bg-gray-700 focus:ring-gray-500;
+  }
+  
+  .btn-outline {
+    @apply border-gray-300 text-gray-700 bg-white hover:bg-gray-50 focus:ring-blue-500;
+  }
+  
+  /* Card styles */
+  .card {
+    @apply bg-white rounded-lg shadow-md overflow-hidden;
+  }
+  
+  .card-header {
+    @apply px-6 py-4 border-b border-gray-200;
+  }
+  
+  .card-body {
+    @apply px-6 py-4;
+  }
+  
+  .card-footer {
+    @apply px-6 py-4 border-t border-gray-200 bg-gray-50;
+  }
+  
+  /* Navigation styles */
+  .nav-link {
+    @apply text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium;
+  }
+  
+  .nav-link-active {
+    @apply text-blue-600 hover:text-blue-700;
+  }
+  
+  /* Form styles */
+  .form-input {
+    @apply block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500;
+  }
+  
+  .form-label {
+    @apply block text-sm font-medium text-gray-700 mb-1;
+  }
+  
+  .form-error {
+    @apply text-red-600 text-sm mt-1;
+  }
+}
+
+/* Custom Utilities */
+@layer utilities {
+  /* WordPress specific utilities */
+  .wp-alignwide {
+    @apply max-w-4xl mx-auto;
+  }
+  
+  .wp-alignfull {
+    @apply max-w-none mx-0;
+  }
+  
+  .wp-block-image img {
+    @apply max-w-full h-auto;
+  }
+  
+  /* Screen reader only text */
+  .sr-only {
+    @apply absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0;
+  }
+}

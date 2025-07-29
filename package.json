@@ -1,0 +1,27 @@
+{
+  "name": "acfberg-theme",
+  "version": "1.0.0",
+  "description": "ACFberg WordPress theme with Tailwind CSS",
+  "main": "index.js",
+  "scripts": {
+    "dev": "npx tailwindcss -i ./assets/css/input.css -o ./assets/css/style.css --watch",
+    "build": "npx tailwindcss -i ./assets/css/input.css -o ./assets/css/style.css --minify",
+    "watch": "npx tailwindcss -i ./assets/css/input.css -o ./assets/css/style.css --watch"
+  },
+  "keywords": [
+    "wordpress",
+    "theme",
+    "tailwind",
+    "acf",
+    "gutenberg"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "tailwindcss": "^3.4.0",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.32",
+    "@tailwindcss/typography": "^0.5.10",
+    "@tailwindcss/forms": "^0.5.7"
+  }
+}

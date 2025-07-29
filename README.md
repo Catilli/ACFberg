@@ -45,6 +45,7 @@ ACFberg/
 ├── blocks/ # Gutenberg custom blocks (with ACF or native)
 ├── templates/ # Template partials
 ├── functions/ # Modular PHP (enqueue, setup, etc.)
+│   └── disable-comments.php # Disable comments for Pages only
 ├── functions.php
 ├── style.css # Theme header info (required)
 ├── index.php # Main archive layout
@@ -52,6 +53,7 @@ ACFberg/
 ├── tailwind.config.js
 └── package.json
 ```
+
 ---
 
 ## 🚀 Getting Started (Dev Setup – To Be Finalized)
@@ -78,12 +80,24 @@ npm run dev`   # Tailwind watcher and build
 
 ---
 
+## 🔧 Current Features
+
+### Comments Management
+- **disable-comments.php**: Automatically disables comments for Pages while keeping them enabled for Posts
+- Removes comment support from Pages only
+- Hides comment forms and existing comments on Pages
+- Removes comments column from Pages admin list
+- Supports extending to other post types if needed
+
+---
+
 ## 📌 Notes
 
 - ACF JSON export will be stored in `/acf-json/` for version control
 - Custom blocks will be either:
 -   Native `block.json`-based blocks
 -   ACF Blocks via `acf_register_block_type()`
+- Modular PHP functions are organized in the `/functions/` directory
 
 ---
 
