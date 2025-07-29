@@ -2,7 +2,7 @@
 
 This is a custom WordPress theme currently in development. It's being built from the ground up using:
 
-- 🌀 [Tailwind CSS](https://tailwindcss.com/) – for utility-first styling
+- 🌀 <a href="https://tailwindcss.com/" target="_blank" rel="noopener noreferrer">Tailwind CSS</a> – for utility-first styling
 - 🛠️ [ACF (Advanced Custom Fields)](https://www.advancedcustomfields.com/) – for flexible content control
 - ✍️ Gutenberg – WordPress' native block editor, extended with custom blocks
 
@@ -68,12 +68,12 @@ npm run dev`   # Tailwind watcher and build
 
 ## ✅ Planned Features
 
-- Tailwind CSS setup
-- ACF JSON sync
-- Gutenberg block registration
-- Custom template parts `(get_template_part)`
-- Modular PHP (theme setup, enqueue, etc.)
-- Performance optimization (PurgeCSS, lazy loading)
+- [ ] Tailwind CSS setup
+- [ ] ACF JSON sync
+- [ ] Gutenberg block registration
+- [ ] Custom template parts `(get_template_part)`
+- [ ] Modular PHP (theme setup, enqueue, etc.)
+- [ ] Performance optimization (PurgeCSS, lazy loading)
 
 ---
 
