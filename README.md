@@ -38,3 +38,54 @@ Create a lightweight, fast, and modular WordPress theme that:
 ---
 
 ## 🗂 Planned Structure
+theme-name/
+├── assets/ # Tailwind CSS, JS files
+├── acf-json/ # ACF field group exports
+├── blocks/ # Gutenberg custom blocks (with ACF or native)
+├── templates/ # Template partials
+├── functions/ # Modular PHP (enqueue, setup, etc.)
+├── functions.php
+├── style.css # Theme header info (required)
+├── index.php # Main archive layout
+├── 404.php # Custom 404 layout
+├── tailwind.config.js
+└── package.json
+
+---
+
+## 🚀 Getting Started (Dev Setup – To Be Finalized)
+
+Planned workflow (in progress):
+
+1. Clone the repository into your WordPress `/wp-content/themes/`
+2. Run:
+npm install
+npm run dev   # Tailwind watcher and build
+3. Build for production:
+npm run build
+
+---
+
+## ✅ Planned Features
+
+- Tailwind CSS setup
+- ACF JSON sync
+- Gutenberg block registration
+- Custom template parts (get_template_part)
+- Modular PHP (theme setup, enqueue, etc.)
+- Performance optimization (PurgeCSS, lazy loading)
+
+---
+
+## 📌 Notes
+
+- ACF JSON export will be stored in /acf-json/ for version control
+- Custom blocks will be either:
+-   Native block.json-based blocks
+-   ACF Blocks via acf_register_block_type()
+
+---
+
+## 📄 License
+
+MIT
