@@ -59,10 +59,10 @@ Planned workflow (in progress):
 
 1. Clone the repository into your WordPress `/wp-content/themes/`
 2. Run:
-npm install
-npm run dev   # Tailwind watcher and build
+`npm install
+npm run dev`   # Tailwind watcher and build
 3. Build for production:
-npm run build
+`npm run build`
 
 ---
 
@@ -71,7 +71,7 @@ npm run build
 - Tailwind CSS setup
 - ACF JSON sync
 - Gutenberg block registration
-- Custom template parts (get_template_part)
+- Custom template parts `(get_template_part)`
 - Modular PHP (theme setup, enqueue, etc.)
 - Performance optimization (PurgeCSS, lazy loading)
 
@@ -79,10 +79,10 @@ npm run build
 
 ## 📌 Notes
 
-- ACF JSON export will be stored in /acf-json/ for version control
+- ACF JSON export will be stored in `/acf-json/` for version control
 - Custom blocks will be either:
--   Native block.json-based blocks
--   ACF Blocks via acf_register_block_type()
+-   Native `block.json`-based blocks
+-   ACF Blocks via `acf_register_block_type()`
 
 ---
 
