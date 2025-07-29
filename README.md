@@ -39,7 +39,7 @@ Create a lightweight, fast, and modular WordPress theme that:
 
 ## 🗂 Planned Structure
 ```
-theme-name/
+ACFberg/
 ├── assets/ # Tailwind CSS, JS files
 ├── acf-json/ # ACF field group exports
 ├── blocks/ # Gutenberg custom blocks (with ACF or native)
