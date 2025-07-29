@@ -38,6 +38,7 @@ Create a lightweight, fast, and modular WordPress theme that:
 ---
 
 ## 🗂 Planned Structure
+```
 theme-name/
 ├── assets/ # Tailwind CSS, JS files
 ├── acf-json/ # ACF field group exports
@@ -50,7 +51,7 @@ theme-name/
 ├── 404.php # Custom 404 layout
 ├── tailwind.config.js
 └── package.json
-
+```
 ---
 
 ## 🚀 Getting Started (Dev Setup – To Be Finalized)
