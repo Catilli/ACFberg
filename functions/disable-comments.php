@@ -1,9 +1,14 @@
 <?php
 /**
- * Disable Comments for Pages Only
+ * Disable Comments
  * 
  * This file disables comments functionality for Pages while keeping
  * comments enabled for Posts and other post types.
+ * 
+ * To disable comments on other post types, add them to the conditions:
+ * Example: if ($post_type === 'page' || $post_type === 'your_custom_type') {
+ *     return false;
+ * }
  */
 
 // Exit if accessed directly
