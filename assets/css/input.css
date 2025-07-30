@@ -5,6 +5,7 @@
 /* WordPress Theme Base Styles */
 @layer base {
   /* Reset some WordPress defaults */
+  body{margin: 0;}
   .wp-block {
     max-width: none;
   }
