@@ -1,7 +1,7 @@
     <footer id="colophon" class="site-footer bg-gray-900 text-white">
         <div class="container mx-auto px-4 py-8">
             <!-- Footer Bottom -->
-            <div class="border-t border-gray-700 mt-8 pt-8 text-center">
+            <div class="border-t border-gray-700 text-center">
                 <p class="text-gray-400">
                     &copy; <?php echo date('Y'); ?> <?php bloginfo('name'); ?>. 
                     <?php esc_html_e('All rights reserved.', 'acfberg'); ?>
