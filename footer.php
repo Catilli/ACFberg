@@ -1,4 +1,4 @@
-    <footer id="colophon" class="site-footer bg-gray-900 text-white mt-16">
+    <footer id="colophon" class="site-footer bg-gray-900 text-white">
         <div class="container mx-auto px-4 py-8">
             <!-- Footer Bottom -->
             <div class="border-t border-gray-700 mt-8 pt-8 text-center">
