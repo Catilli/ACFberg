@@ -4,7 +4,6 @@
  * > Inline JSON CSS
  * > Supports both class="" and id=""
  * > Width Media Query Grouping
- * > Runs on frontend + Beaver Builder editor
  * > Skips wp-admin and AJAX/admin screens
  */
 

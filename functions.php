@@ -9,19 +9,11 @@ require_once get_template_directory() . '/functions/script-system.php';
  * Enqueue scripts and styles
  */
 function acfberg_enqueue_scripts() {
-    // Enqueue Tailwind CSS
-    wp_enqueue_style(
-        'acfberg-tailwind',
-        get_template_directory_uri() . '/assets/css/style.css',
-        array(),
-        filemtime(get_template_directory() . '/assets/css/style.css')
-    );
-    
     // Enqueue theme's main style.css for WordPress theme info
     wp_enqueue_style(
         'acfberg-style',
         get_stylesheet_uri(),
-        array('acfberg-tailwind'),
+        array(),
         filemtime(get_stylesheet_directory() . '/style.css')
     );
 }
