@@ -25,9 +25,8 @@
                         the_custom_logo();
                     } else {
                         ?>
-                        <h1 class="site-title text-2xl font-bold text-gray-900">
                             <a href="<?php echo esc_url(home_url('/')); ?>" rel="home">
-                                <?php bloginfo('name'); ?>
+                                <img src="<?php echo get_template_directory_uri(); ?>/assets/media/default-logo.php" alt="<?php bloginfo('name'); ?>" class="h-8 w-auto">
                             </a>
                         </h1>
                         <?php
