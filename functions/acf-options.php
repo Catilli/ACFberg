@@ -7,7 +7,7 @@
 /**
  * Add ACF Options Page
  */
-function add_options_page() {
+function add_my_options_page() {
     if (function_exists('acf_add_options_page')) {
         acf_add_options_page(array(
             'page_title'  => 'Theme Options',
@@ -27,12 +27,12 @@ function add_options_page() {
         ));
     }
 }
-add_action('acf/init', 'add_options_page');
+add_action('acf/init', 'add_my_options_page');
 
 /**
  * Add ACF Field Groups
  */
-function add_local_field_groups() {
+function add_my_local_field_groups() {
     if (function_exists('acf_add_local_field_group')) {
         
         // Header Settings Field Group
@@ -68,7 +68,7 @@ function add_local_field_groups() {
         ));
     }
 }
-add_action('acf/init', 'add_local_field_groups');
+add_action('acf/init', 'add_my_local_field_groups');
 
 /**
  * Helper function to get ACF options
