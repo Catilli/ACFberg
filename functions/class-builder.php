@@ -4,6 +4,13 @@
  * Visual class management with semantic naming
  */
 
+// Debug: Test if file is loaded
+add_action('admin_notices', function() {
+    if (isset($_GET['post_type']) && $_GET['post_type'] === 'post') {
+        echo '<div class="notice notice-info"><p><strong>Class Builder Debug:</strong> File is loaded successfully!</p></div>';
+    }
+});
+
 /**
  * Register Class Builder Scripts
  */
@@ -272,6 +279,7 @@ function apply_classes_to_html($html, $classes) {
  * Add Class Builder meta box
  */
 function add_class_builder_meta_box() {
+    // Always add the meta box for posts
     add_meta_box(
         'class_builder',
         'Class Builder',
@@ -289,6 +297,8 @@ add_action('add_meta_boxes', 'add_class_builder_meta_box');
 function class_builder_meta_box_callback($post) {
     ?>
     <div id="class-builder">
+        <p><strong>Class Builder is working!</strong></p>
+        
         <div class="class-categories">
             <h4>Layout</h4>
             <div class="class-buttons" data-category="layout">
@@ -352,6 +362,18 @@ function class_builder_meta_box_callback($post) {
         <div class="preview-section">
             <h4>Preview</h4>
             <div id="class-preview"></div>
+        </div>
+        
+        <!-- Debug info -->
+        <div style="margin-top: 20px; padding: 10px; background: #f0f0f0; border: 1px solid #ccc; font-size: 12px;">
+            <strong>Debug Info:</strong><br>
+            Theme: <?php echo get_template(); ?><br>
+            Template Directory: <?php echo get_template_directory_uri(); ?><br>
+            JS File: <?php echo get_template_directory_uri(); ?>/assets/js/class-builder.js<br>
+            CSS File: <?php echo get_template_directory_uri(); ?>/assets/css/class-builder.css<br>
+            Current Screen: <?php echo get_current_screen() ? get_current_screen()->id : 'Unknown'; ?><br>
+            Post ID: <?php echo $post->ID; ?><br>
+            File Loaded: ✅
         </div>
     </div>
     <?php
