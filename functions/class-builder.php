@@ -11,6 +11,113 @@ add_action('admin_notices', function() {
     }
 });
 
+// Add to admin menu for easy access
+add_action('admin_menu', function() {
+    add_menu_page(
+        'Class Builder',
+        'Class Builder',
+        'edit_posts',
+        'class-builder',
+        'class_builder_admin_page',
+        'dashicons-admin-appearance',
+        30
+    );
+});
+
+function class_builder_admin_page() {
+    ?>
+    <div class="wrap">
+        <h1>Class Builder</h1>
+        <p>This is the standalone Class Builder page.</p>
+        <?php class_builder_interface(); ?>
+    </div>
+    <?php
+}
+
+function class_builder_interface() {
+    ?>
+    <div id="class-builder" style="max-width: 800px;">
+        <p><strong>Class Builder is working!</strong></p>
+        
+        <div class="class-categories">
+            <h4>Layout</h4>
+            <div class="class-buttons" data-category="layout">
+                <button class="class-btn" data-class="container">Container</button>
+                <button class="class-btn" data-class="flex">Flex</button>
+                <button class="class-btn" data-class="grid">Grid</button>
+                <button class="class-btn" data-class="stack">Stack</button>
+                <button class="class-btn" data-class="cluster">Cluster</button>
+            </div>
+            
+            <h4>Spacing</h4>
+            <div class="class-buttons" data-category="spacing">
+                <button class="class-btn" data-class="space-xs">XS</button>
+                <button class="class-btn" data-class="space-sm">SM</button>
+                <button class="class-btn" data-class="space-md">MD</button>
+                <button class="class-btn" data-class="space-lg">LG</button>
+                <button class="class-btn" data-class="space-xl">XL</button>
+            </div>
+            
+            <h4>Typography</h4>
+            <div class="class-buttons" data-category="typography">
+                <button class="class-btn" data-class="text-xs">XS</button>
+                <button class="class-btn" data-class="text-sm">SM</button>
+                <button class="class-btn" data-class="text-base">Base</button>
+                <button class="class-btn" data-class="text-lg">LG</button>
+                <button class="class-btn" data-class="text-xl">XL</button>
+                <button class="class-btn" data-class="text-2xl">2XL</button>
+                <button class="class-btn" data-class="text-3xl">3XL</button>
+                <button class="class-btn" data-class="text-4xl">4XL</button>
+            </div>
+            
+            <h4>Colors</h4>
+            <div class="class-buttons" data-category="colors">
+                <button class="class-btn" data-class="text-primary">Primary</button>
+                <button class="class-btn" data-class="text-secondary">Secondary</button>
+                <button class="class-btn" data-class="text-dark">Dark</button>
+                <button class="class-btn" data-class="text-light">Light</button>
+                <button class="class-btn" data-class="bg-primary">BG Primary</button>
+                <button class="class-btn" data-class="bg-secondary">BG Secondary</button>
+                <button class="class-btn" data-class="bg-dark">BG Dark</button>
+                <button class="class-btn" data-class="bg-light">BG Light</button>
+            </div>
+            
+            <h4>Components</h4>
+            <div class="class-buttons" data-category="components">
+                <button class="class-btn" data-class="button">Button</button>
+                <button class="class-btn" data-class="button-primary">Primary</button>
+                <button class="class-btn" data-class="button-secondary">Secondary</button>
+                <button class="class-btn" data-class="button-outline">Outline</button>
+                <button class="class-btn" data-class="card">Card</button>
+                <button class="class-btn" data-class="input">Input</button>
+            </div>
+        </div>
+        
+        <div class="selected-classes">
+            <h4>Selected Classes</h4>
+            <div id="selected-classes-list"></div>
+            <input type="text" id="classes-input" placeholder="Classes will appear here..." readonly>
+        </div>
+        
+        <div class="preview-section">
+            <h4>Preview</h4>
+            <div id="class-preview"></div>
+        </div>
+        
+        <!-- Debug info -->
+        <div style="margin-top: 20px; padding: 10px; background: #f0f0f0; border: 1px solid #ccc; font-size: 12px;">
+            <strong>Debug Info:</strong><br>
+            Theme: <?php echo get_template(); ?><br>
+            Template Directory: <?php echo get_template_directory_uri(); ?><br>
+            JS File: <?php echo get_template_directory_uri(); ?>/assets/js/class-builder.js<br>
+            CSS File: <?php echo get_template_directory_uri(); ?>/assets/css/class-builder.css<br>
+            Current Screen: <?php echo get_current_screen() ? get_current_screen()->id : 'Unknown'; ?><br>
+            File Loaded: ✅
+        </div>
+    </div>
+    <?php
+}
+
 /**
  * Register Class Builder Scripts
  */
