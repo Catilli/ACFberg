@@ -13,6 +13,7 @@ require_once get_template_directory() . '/functions/disable-comments.php';
 require_once get_template_directory() . '/functions/class-system.php';
 require_once get_template_directory() . '/functions/script-system.php';
 require_once get_template_directory() . '/functions/block-patterns.php';
+require_once get_template_directory() . '/functions/acf-options.php';
 
 /**
  * Enqueue scripts and styles

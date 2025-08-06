@@ -21,26 +21,15 @@
                 <!-- Site Branding -->
                 <div class="site-branding flex items-center">
                     <?php
-                    if (has_custom_logo()) {
-                        the_custom_logo();
-                    } else {
+                    $logo = get_acf_option('site_logo', get_template_directory_uri() . '/assets/media/default-logo.svg');
+                    if (!empty($logo)) {
                         ?>
                             <a href="<?php echo esc_url(home_url('/')); ?>" rel="home">
-                                <img src="<?php echo get_template_directory_uri(); ?>/assets/media/default-logo.svg" alt="<?php bloginfo('name'); ?>" class="h-8 w-auto">
+                                <img src="<?php echo $logo; ?>" alt="<?php bloginfo('name'); ?>" class="h-8 w-auto">
                             </a>
-                        </h1>
                         <?php
                     }
                     ?>
-                    
-                    <?php
-                    $acfberg_description = get_bloginfo('description', 'display');
-                    if ($acfberg_description || is_customize_preview()) :
-                        ?>
-                        <p class="site-description text-gray-600 ml-4">
-                            <?php echo $acfberg_description; ?>
-                        </p>
-                    <?php endif; ?>
                 </div>
 
                 <!-- Navigation -->
