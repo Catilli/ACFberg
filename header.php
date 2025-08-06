@@ -14,8 +14,8 @@
 <div id="page" class="site">
     <a class="skip-link screen-reader-text" href="#primary"><?php esc_html_e('Skip to content', get_text_domain()); ?></a>
 
-    <header id="masthead" class="site-header bg-white shadow-md">
-        <div class="container mx-auto px-4">
+    <header id="masthead" class="site-header">
+        <div class="container">
             <div class="flex items-center justify-between py-4">
                 
                 <!-- Site Branding -->
