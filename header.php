@@ -26,7 +26,7 @@
                     } else {
                         ?>
                             <a href="<?php echo esc_url(home_url('/')); ?>" rel="home">
-                                <img src="<?php echo get_template_directory_uri(); ?>/assets/media/default-logo.php" alt="<?php bloginfo('name'); ?>" class="h-8 w-auto">
+                                <img src="<?php echo get_template_directory_uri(); ?>/assets/media/default-logo.svg" alt="<?php bloginfo('name'); ?>" class="h-8 w-auto">
                             </a>
                         </h1>
                         <?php
