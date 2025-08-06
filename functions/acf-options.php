@@ -107,6 +107,7 @@ add_action('acf/save_post', function($post_id) {
             // Clear stored CSS
             delete_option('tailwind_captured_css');
             delete_option('tailwind_css_last_updated');
+            delete_option('tailwind_visited_pages');
             
             // Clear the field
             update_field('manual_capture', '', 'option');
@@ -132,6 +133,24 @@ add_filter('acf/load_value/name=tailwind_css_status', function($value) {
 
 add_filter('acf/load_value/name=stored_css_preview', function($value) {
     return get_stored_tailwind_css();
+});
+
+/**
+ * Add visited pages info to the status field
+ */
+add_filter('acf/load_value/name=tailwind_css_status', function($value) {
+    $last_updated = get_option('tailwind_css_last_updated', 0);
+    $stored_css = get_stored_tailwind_css();
+    $visited_pages = get_option('tailwind_visited_pages', array());
+    
+    if ($last_updated > 0 && !empty($stored_css)) {
+        $date = date('Y-m-d H:i:s', $last_updated);
+        $size = strlen($stored_css);
+        $page_count = count($visited_pages);
+        return "✅ CSS captured on {$date} ({$size} characters, {$page_count} pages visited)";
+    } else {
+        return "⚠️ No CSS captured yet";
+    }
 });
 
 /**

@@ -62,6 +62,40 @@ function get_stored_tailwind_css() {
 }
 
 /**
+ * Combine CSS without duplicates
+ */
+function combine_css_without_duplicates($existing_css, $new_css) {
+    // Extract all CSS rules from existing CSS
+    $existing_rules = [];
+    preg_match_all('/\.([^{]+)\s*\{([^}]+)\}/s', $existing_css, $matches, PREG_SET_ORDER);
+    foreach ($matches as $match) {
+        $selector = trim($match[1]);
+        $properties = trim($match[2]);
+        $existing_rules[$selector] = $properties;
+    }
+    
+    // Extract all CSS rules from new CSS
+    $new_rules = [];
+    preg_match_all('/\.([^{]+)\s*\{([^}]+)\}/s', $new_css, $matches, PREG_SET_ORDER);
+    foreach ($matches as $match) {
+        $selector = trim($match[1]);
+        $properties = trim($match[2]);
+        $new_rules[$selector] = $properties;
+    }
+    
+    // Merge rules (new rules override existing ones)
+    $combined_rules = array_merge($existing_rules, $new_rules);
+    
+    // Rebuild CSS
+    $combined_css = '';
+    foreach ($combined_rules as $selector => $properties) {
+        $combined_css .= ".$selector {\n  $properties\n}\n";
+    }
+    
+    return $combined_css;
+}
+
+/**
  * Capture and store CSS from admin
  */
 function capture_tailwind_css($html) {
@@ -79,7 +113,16 @@ function capture_tailwind_css($html) {
     // Get Tailwind JSON from CDN
     $tailwind_json = get_tailwind_json();
     
-    if (!$tailwind_json) return $html;
+    // If CDN fails, use stored CSS as fallback
+    if (!$tailwind_json) {
+        $stored_css = get_stored_tailwind_css();
+        if (!empty($stored_css)) {
+            $style_tag = "<style id='fallback-tailwind-css'>\n" . $stored_css . "\n</style>\n";
+            $html = preg_replace('/<head[^>]*>/', '$0' . $style_tag, $html, 1);
+            return $html;
+        }
+        return $html;
+    }
 
     $class_map = $tailwind_json;
     if (!is_array($class_map)) return $html;
@@ -158,10 +201,23 @@ function capture_tailwind_css($html) {
 
     $generated_css = implode("\n", $output);
     
-    // Store the CSS for frontend use
+    // Store the CSS for frontend use (accumulate rather than overwrite)
     if (!empty($generated_css)) {
-        update_option('tailwind_captured_css', $generated_css);
+        $existing_css = get_option('tailwind_captured_css', '');
+        
+        // Combine existing and new CSS, removing duplicates
+        $combined_css = combine_css_without_duplicates($existing_css, $generated_css);
+        
+        update_option('tailwind_captured_css', $combined_css);
         update_option('tailwind_css_last_updated', current_time('timestamp'));
+        
+        // Track which pages have been visited for CSS capture
+        $visited_pages = get_option('tailwind_visited_pages', array());
+        $current_page = get_permalink();
+        if (!in_array($current_page, $visited_pages)) {
+            $visited_pages[] = $current_page;
+            update_option('tailwind_visited_pages', $visited_pages);
+        }
     }
 
     // Inject into <head> for admin users
@@ -219,10 +275,12 @@ function tailwind_css_admin_notice() {
     
     $last_updated = get_option('tailwind_css_last_updated', 0);
     $stored_css = get_stored_tailwind_css();
+    $visited_pages = get_option('tailwind_visited_pages', array());
     
     if ($last_updated > 0 && !empty($stored_css)) {
         $date = date('Y-m-d H:i:s', $last_updated);
-        echo '<div class="notice notice-info"><p><strong>Tailwind CSS Status:</strong> Last captured on ' . $date . ' (' . strlen($stored_css) . ' characters)</p></div>';
+        $page_count = count($visited_pages);
+        echo '<div class="notice notice-info"><p><strong>Tailwind CSS Status:</strong> Last captured on ' . $date . ' (' . strlen($stored_css) . ' characters, ' . $page_count . ' pages visited)</p></div>';
     } else {
         echo '<div class="notice notice-warning"><p><strong>Tailwind CSS Status:</strong> No CSS has been captured yet. Visit a page with Tailwind classes to capture CSS.</p></div>';
     }

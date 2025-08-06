@@ -50,8 +50,16 @@ functions/
 ### Storage
 
 CSS is stored in WordPress options:
-- `tailwind_captured_css`: The actual CSS content
+- `tailwind_captured_css`: The actual CSS content (accumulated from all pages)
 - `tailwind_css_last_updated`: Timestamp of last capture
+- `tailwind_visited_pages`: Array of pages that have been visited for CSS capture
+
+### CSS Accumulation
+
+The system now **accumulates CSS** rather than overwriting:
+- Each page visit adds its unique Tailwind classes to the stored CSS
+- Duplicate classes are automatically merged
+- The stored CSS becomes a comprehensive library of all used Tailwind classes
 
 ### Testing
 
