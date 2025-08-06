@@ -11,6 +11,7 @@ function get_text_domain() {
 // Include functions files
 require_once get_template_directory() . '/functions/setup.php';           // Theme setup & menus
 require_once get_template_directory() . '/functions/class-system.php';    // CSS class processing
+require_once get_template_directory() . '/functions/class-builder.php';   // Webflow-like class builder
 require_once get_template_directory() . '/functions/script-system.php';   // Script enqueuing
 require_once get_template_directory() . '/functions/acf-options.php';     // ACF options pages
 require_once get_template_directory() . '/functions/block-patterns.php';  // Block patterns
