@@ -1,93 +1,69 @@
-# ACFberg (WIP) – ACF + Gutenberg
+# ACFberg Theme
 
-This is a custom WordPress theme currently in development. It's being built from the ground up using:
+A WordPress theme with advanced Tailwind CSS integration using an admin-only CDN approach.
 
-- 🛠️ [ACF (Advanced Custom Fields)](https://www.advancedcustomfields.com/) – for flexible content control
-- ✍️ Gutenberg – WordPress' native block editor, extended with custom blocks
+## Tailwind CSS Capture System
 
----
+This theme implements a unique approach to using Tailwind CSS:
 
-## 🚧 Status
+### How It Works
 
-> **Note:** This theme is a work in progress. Not ready for production use.
+1. **Admin-Only CDN**: The Tailwind CDN only loads when users are logged in (admin area)
+2. **CSS Capture**: When logged-in users visit pages, the generated CSS is captured and stored
+3. **Frontend Delivery**: Non-logged-in users receive the stored CSS instead of the CDN
 
----
+### Benefits
 
-## 🎯 Goal
+- **Performance**: Frontend users get static CSS instead of dynamic CDN loading
+- **Reliability**: No dependency on external CDN for frontend users
+- **Control**: Admins can manually capture and manage CSS
+- **Flexibility**: Still get the benefits of Tailwind CDN for development
 
-Create a lightweight, fast, and modular WordPress theme that:
-- Supports Gutenberg and ACF custom blocks
-- Scores well in PageSpeed Insights and GTmetrix
-- Is easy to extend and maintain
+### Usage
 
----
+#### For Developers/Admins:
+1. Log into WordPress admin
+2. Visit any page with Tailwind classes
+3. CSS is automatically captured and stored
+4. Use "Theme Options → Tailwind CSS" to manually capture or clear CSS
 
-## 📦 Stack Overview
+#### For Frontend Users:
+- Automatically receive stored CSS without any CDN dependencies
+- Fast loading with static CSS
+- No external requests to Tailwind CDN
 
-| Tool | Purpose |
-|------|---------|
-| ACF (Free or Pro) | Manage custom fields and block content |
-| Gutenberg | Custom block-based editing |
-| PHP | WordPress templating and logic |
+### File Structure
 
----
-
-## 🗂 Planned Structure
 ```
-ACFberg/
-├── assets/ # CSS, JS files
-├── acf-json/ # ACF field group exports
-├── blocks/ # Gutenberg custom blocks (with ACF or native)
-├── templates/ # Template partials
-├── functions/ # Modular PHP (enqueue, setup, etc.)
-│   └── disable-comments.php # Disable comments for Pages only
-├── functions.php
-├── style.css # Theme header info (required)
-├── index.php # Main archive layout
-└── 404.php # Custom 404 layout
+functions/
+├── class-system.php      # Main Tailwind capture system
+├── acf-options.php       # Admin interface for CSS management
+└── script-system.php     # Dynamic script loading
 ```
 
----
+### Key Functions
 
-## 🚀 Getting Started (Dev Setup – To Be Finalized)
+- `capture_tailwind_css()`: Captures CSS from admin users
+- `inject_stored_css()`: Serves stored CSS to frontend users
+- `get_stored_tailwind_css()`: Retrieves captured CSS from options
 
-Planned workflow (in progress):
+### Storage
 
-1. Clone the repository into your WordPress `/wp-content/themes/`
+CSS is stored in WordPress options:
+- `tailwind_captured_css`: The actual CSS content
+- `tailwind_css_last_updated`: Timestamp of last capture
 
----
+### Testing
 
-## ✅ Planned Features
+Visit the homepage to see the system in action:
+- **Logged in**: See Tailwind CDN working with real-time CSS
+- **Not logged in**: See stored CSS being served
+- **Admin**: Use Theme Options to manage CSS capture
 
-- [ ] ACF JSON sync
-- [ ] Gutenberg block registration
-- [ ] Custom template parts `(get_template_part)`
-- [ ] Modular PHP (theme setup, enqueue, etc.)
-- [ ] Performance optimization (lazy loading)
+## Features
 
----
-
-## 🔧 Current Features
-
-### Comments Management
-- **disable-comments.php**: Automatically disables comments for Pages while keeping them enabled for Posts
-- Removes comment support from Pages only
-- Hides comment forms and existing comments on Pages
-- Removes comments column from Pages admin list
-- Supports extending to other post types if needed
-
----
-
-## 📌 Notes
-
-- ACF JSON export will be stored in `/acf-json/` for version control
-- Custom blocks will be either:
--   Native `block.json`-based blocks
--   ACF Blocks via `acf_register_block_type()`
-- Modular PHP functions are organized in the `/functions/` directory
-
----
-
-## 📄 License
-
-MIT
+- Dynamic script loading based on HTML classes/IDs
+- ACF integration for theme options
+- Block pattern support
+- Comment system disabled
+- Responsive design with Tailwind utilities

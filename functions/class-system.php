@@ -1,16 +1,21 @@
 <?php
 /**
  * Dynamic Class System
- * > Inline JSON CSS from Tailwind CDN
+ * > Admin-only Tailwind CDN with CSS capture
+ * > Stores generated CSS for frontend use
  * > Supports both class="" and id="" 
  * > Width Media Query Grouping
- * > Skips wp-admin and AJAX/admin screens
  */
 
 /**
- * Get Tailwind JSON from CDN
+ * Get Tailwind JSON from CDN (admin only)
  */
 function get_tailwind_json() {
+    // Only run in admin or when user is logged in
+    if (!is_admin() && !is_user_logged_in()) {
+        return false;
+    }
+    
     // Cache the JSON for 1 hour to avoid repeated requests
     $cache_key = 'tailwind_json_cache';
     $cached_json = get_transient($cache_key);
@@ -48,14 +53,29 @@ function get_tailwind_json() {
     return false;
 }
 
-add_action('template_redirect', function () {
-    // Only run on frontend or Beaver Builder editor
-    if (!is_admin() && !defined('DOING_AJAX') && !is_feed() && !is_preview()) {
-        ob_start('cs_process_buffer');
-    }
-});
+/**
+ * Get stored CSS for frontend users
+ */
+function get_stored_tailwind_css() {
+    $stored_css = get_option('tailwind_captured_css', '');
+    return $stored_css;
+}
 
-function cs_process_buffer($html) {
+/**
+ * Capture and store CSS from admin
+ */
+function capture_tailwind_css($html) {
+    // Only capture in admin or when user is logged in
+    if (!is_admin() && !is_user_logged_in()) {
+        return $html;
+    }
+    
+    // Check if manual capture was triggered
+    $force_capture = get_option('tailwind_force_capture', false);
+    if ($force_capture) {
+        delete_option('tailwind_force_capture');
+    }
+    
     // Get Tailwind JSON from CDN
     $tailwind_json = get_tailwind_json();
     
@@ -136,7 +156,15 @@ function cs_process_buffer($html) {
         $output[] = "@media ($breakpoint) {\n" . implode("\n", $rules) . "\n}";
     }
 
-    // Inject into <head>
+    $generated_css = implode("\n", $output);
+    
+    // Store the CSS for frontend use
+    if (!empty($generated_css)) {
+        update_option('tailwind_captured_css', $generated_css);
+        update_option('tailwind_css_last_updated', current_time('timestamp'));
+    }
+
+    // Inject into <head> for admin users
     if (!empty($output)) {
         $style_tag = "<style id='inline-json-styles'>\n" . implode("\n", $output) . "\n</style>\n";
         $html = preg_replace('/<head[^>]*>/', '$0' . $style_tag, $html, 1);
@@ -144,3 +172,59 @@ function cs_process_buffer($html) {
 
     return $html;
 }
+
+/**
+ * Inject stored CSS for frontend users
+ */
+function inject_stored_css($html) {
+    // Only inject for non-admin, non-logged-in users
+    if (is_admin() || is_user_logged_in()) {
+        return $html;
+    }
+    
+    $stored_css = get_stored_tailwind_css();
+    
+    if (!empty($stored_css)) {
+        $style_tag = "<style id='stored-tailwind-css'>\n" . $stored_css . "\n</style>\n";
+        $html = preg_replace('/<head[^>]*>/', '$0' . $style_tag, $html, 1);
+    }
+
+    return $html;
+}
+
+add_action('template_redirect', function () {
+    // Only run on frontend
+    if (!is_admin() && !defined('DOING_AJAX') && !is_feed() && !is_preview()) {
+        ob_start('cs_process_buffer');
+    }
+});
+
+function cs_process_buffer($html) {
+    // If user is logged in or in admin, capture CSS
+    if (is_admin() || is_user_logged_in()) {
+        return capture_tailwind_css($html);
+    }
+    
+    // Otherwise, inject stored CSS
+    return inject_stored_css($html);
+}
+
+/**
+ * Admin notice to show when CSS was last captured
+ */
+function tailwind_css_admin_notice() {
+    if (!is_admin() || !is_user_logged_in()) {
+        return;
+    }
+    
+    $last_updated = get_option('tailwind_css_last_updated', 0);
+    $stored_css = get_stored_tailwind_css();
+    
+    if ($last_updated > 0 && !empty($stored_css)) {
+        $date = date('Y-m-d H:i:s', $last_updated);
+        echo '<div class="notice notice-info"><p><strong>Tailwind CSS Status:</strong> Last captured on ' . $date . ' (' . strlen($stored_css) . ' characters)</p></div>';
+    } else {
+        echo '<div class="notice notice-warning"><p><strong>Tailwind CSS Status:</strong> No CSS has been captured yet. Visit a page with Tailwind classes to capture CSS.</p></div>';
+    }
+}
+add_action('admin_notices', 'tailwind_css_admin_notice');

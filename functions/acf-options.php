@@ -1,83 +1,82 @@
 <?php
 /**
- * ACF Options Page
- * Creates theme options page and field groups
+ * ACF Options Pages
  */
 
-/**
- * Add ACF Options Page
- */
-function add_my_options_page() {
-    // Add parent menu page using admin_menu
-    add_menu_page(
-        'Theme Options',           // Page title
-        'Theme Options',           // Menu title
-        'edit_posts',             // Capability
-        'theme-options',          // Menu slug
-        'theme_options_page_callback', // Callback function
-        'dashicons-admin-generic', // Icon
-        59                        // Position
-    );
+if (function_exists('acf_add_options_page')) {
+    acf_add_options_page(array(
+        'page_title' => 'Theme Options',
+        'menu_title' => 'Theme Options',
+        'menu_slug' => 'theme-options',
+        'capability' => 'edit_posts',
+        'redirect' => false
+    ));
     
-    // Add child pages using ACF
-    if (function_exists('acf_add_options_sub_page')) {
-        acf_add_options_sub_page(array(
-            'page_title'  => 'Header Settings',
-            'menu_title'  => 'Header',
-            'parent_slug' => 'theme-options',
-        ));
-    }
-}
-add_action('admin_menu', 'add_my_options_page');
-
-/**
- * Callback function for the parent options page
- */
-function theme_options_page_callback() {
-    ?>
-    <div class="wrap">
-        <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
-        <p>Welcome to the Theme Options page. Use the sub-menu items to configure different sections of your theme.</p>
-        
-        <div class="card">
-            <h2>Quick Links</h2>
-            <ul>
-                <li><a href="<?php echo admin_url('admin.php?page=theme-options&subpage=header'); ?>">Header Settings</a></li>
-            </ul>
-        </div>
-    </div>
-    <?php
+    acf_add_options_sub_page(array(
+        'page_title' => 'Tailwind CSS Manager',
+        'menu_title' => 'Tailwind CSS',
+        'parent_slug' => 'theme-options',
+        'capability' => 'edit_posts'
+    ));
 }
 
 /**
- * Add ACF Field Groups
+ * Add custom fields for Tailwind CSS management
  */
-function add_my_local_field_groups() {
+add_action('acf/init', function() {
     if (function_exists('acf_add_local_field_group')) {
-        
-        // Header Settings Field Group
         acf_add_local_field_group(array(
-            'key' => 'group_header_settings',
-            'title' => 'Header Settings',
+            'key' => 'group_tailwind_css_manager',
+            'title' => 'Tailwind CSS Manager',
             'fields' => array(
                 array(
-                    'key' => 'field_site_logo',
-                    'label' => 'Site Logo',
-                    'name' => 'site_logo',
-                    'type' => 'image',
-                    'return_format' => 'url',
-                    'preview_size' => 'medium',
-                    'library' => 'all',
+                    'key' => 'field_tailwind_css_status',
+                    'label' => 'CSS Status',
+                    'name' => 'tailwind_css_status',
+                    'type' => 'message',
+                    'message' => 'This field will be populated dynamically',
+                    'wrapper' => array(
+                        'width' => '100',
+                        'class' => '',
+                        'id' => ''
+                    )
                 ),
+                array(
+                    'key' => 'field_manual_capture',
+                    'label' => 'Manual Capture',
+                    'name' => 'manual_capture',
+                    'type' => 'button_group',
+                    'choices' => array(
+                        'capture' => 'Capture Current CSS',
+                        'clear' => 'Clear Stored CSS'
+                    ),
+                    'default_value' => '',
+                    'return_format' => 'value',
+                    'allow_null' => 0,
+                    'layout' => 'horizontal'
+                ),
+                array(
+                    'key' => 'field_stored_css_preview',
+                    'label' => 'Stored CSS Preview',
+                    'name' => 'stored_css_preview',
+                    'type' => 'textarea',
+                    'readonly' => 1,
+                    'rows' => 20,
+                    'wrapper' => array(
+                        'width' => '100',
+                        'class' => '',
+                        'id' => ''
+                    )
+                )
             ),
             'location' => array(
                 array(
                     array(
                         'param' => 'options_page',
                         'operator' => '==',
-                        'value' => 'theme-options',
-                    ),
-                ),
+                        'value' => 'theme-options_page_tailwind-css'
+                    )
+                )
             ),
             'menu_order' => 0,
             'position' => 'normal',
@@ -85,25 +84,61 @@ function add_my_local_field_groups() {
             'label_placement' => 'top',
             'instruction_placement' => 'label',
             'hide_on_screen' => '',
+            'active' => true,
+            'description' => ''
         ));
     }
-}
-add_action('acf/init', 'add_my_local_field_groups');
+});
 
 /**
- * Helper function to get ACF options
+ * Handle manual capture and clear actions
  */
-function get_acf_option($field_name, $default = '') {
-    if (function_exists('get_field')) {
-        $value = get_field($field_name, 'option');
-        return $value !== null ? $value : $default;
+add_action('acf/save_post', function($post_id) {
+    if ($post_id === 'options') {
+        $manual_capture = get_field('manual_capture', 'option');
+        
+        if ($manual_capture === 'capture') {
+            // Trigger CSS capture
+            do_action('tailwind_manual_capture');
+            
+            // Clear the field
+            update_field('manual_capture', '', 'option');
+        } elseif ($manual_capture === 'clear') {
+            // Clear stored CSS
+            delete_option('tailwind_captured_css');
+            delete_option('tailwind_css_last_updated');
+            
+            // Clear the field
+            update_field('manual_capture', '', 'option');
+        }
     }
-    return $default;
-}
+}, 20);
 
 /**
- * Helper function to get ACF option with fallback
+ * Populate dynamic fields
  */
-function acf_option($field_name, $default = '') {
-    echo get_acf_option($field_name, $default);
-} 
+add_filter('acf/load_value/name=tailwind_css_status', function($value) {
+    $last_updated = get_option('tailwind_css_last_updated', 0);
+    $stored_css = get_stored_tailwind_css();
+    
+    if ($last_updated > 0 && !empty($stored_css)) {
+        $date = date('Y-m-d H:i:s', $last_updated);
+        $size = strlen($stored_css);
+        return "✅ CSS captured on {$date} ({$size} characters)";
+    } else {
+        return "⚠️ No CSS captured yet";
+    }
+});
+
+add_filter('acf/load_value/name=stored_css_preview', function($value) {
+    return get_stored_tailwind_css();
+});
+
+/**
+ * Manual capture action handler
+ */
+add_action('tailwind_manual_capture', function() {
+    // This will be triggered when the capture button is clicked
+    // The actual capture happens on the next page load
+    update_option('tailwind_force_capture', true);
+}); 
