@@ -49,6 +49,32 @@ function combine_css_without_duplicates($existing_css, $new_css) {
 }
 
 /**
+ * Extract CSS from Tailwind CDN style tag
+ */
+function extract_tailwind_css_from_head($html) {
+    // Look for the Tailwind CDN style tag
+    if (preg_match('/<style[^>]*id="__next"[^>]*>(.*?)<\/style>/s', $html, $matches)) {
+        return trim($matches[1]);
+    }
+    
+    // Alternative: look for any style tag that might contain Tailwind CSS
+    if (preg_match('/<style[^>]*>(.*?)<\/style>/s', $html, $matches)) {
+        $css_content = trim($matches[1]);
+        // Check if it looks like Tailwind CSS (contains utility classes)
+        if (strpos($css_content, '.') !== false && 
+            (strpos($css_content, 'display:') !== false || 
+             strpos($css_content, 'flex') !== false || 
+             strpos($css_content, 'grid') !== false ||
+             strpos($css_content, 'margin') !== false ||
+             strpos($css_content, 'padding') !== false)) {
+            return $css_content;
+        }
+    }
+    
+    return '';
+}
+
+/**
  * Capture and store CSS from admin
  */
 function capture_tailwind_css($html) {
@@ -61,6 +87,32 @@ function capture_tailwind_css($html) {
     $force_capture = get_option('tailwind_force_capture', false);
     if ($force_capture) {
         delete_option('tailwind_force_capture');
+    }
+    
+    // Extract CSS from Tailwind CDN style tag
+    $extracted_css = extract_tailwind_css_from_head($html);
+    
+    if (!empty($extracted_css)) {
+        // Store the CSS for frontend use (accumulate rather than overwrite)
+        $existing_css = get_option('tailwind_captured_css', '');
+        
+        // Combine existing and new CSS, removing duplicates
+        $combined_css = combine_css_without_duplicates($existing_css, $extracted_css);
+        
+        update_option('tailwind_captured_css', $combined_css);
+        update_option('tailwind_css_last_updated', current_time('timestamp'));
+        
+        // Track which pages have been visited for CSS capture
+        $visited_pages = get_option('tailwind_visited_pages', array());
+        $current_page = get_permalink();
+        if (!in_array($current_page, $visited_pages)) {
+            $visited_pages[] = $current_page;
+            update_option('tailwind_visited_pages', $visited_pages);
+        }
+        
+        // Add a marker to show CSS was captured
+        $capture_notice = "<!-- Tailwind CSS captured: " . strlen($extracted_css) . " characters -->\n";
+        $html = preg_replace('/<head[^>]*>/', '$0' . $capture_notice, $html, 1);
     }
     
     // Use stored CSS as fallback
