@@ -30,9 +30,45 @@ function render_theme_options_page() {
     <div class="wrap">
         <h1>Theme Options</h1>
         <p>Welcome to the theme options page. Use the submenu to access specific settings.</p>
-        
-
+        <hr>
+        <h2>Theme CSS Regeneration</h2>
+        <p>This will extract Tailwind CDN styles from the current page and save them as a cache file for frontend use.</p>
+        <button id="regenerate-btn" class="button button-primary">Regenerate CSS</button>
     </div>
+
+    <script>
+    document.getElementById('regenerate-btn').addEventListener('click', async () => {
+        const tailwindStyle = [...document.querySelectorAll('style')]
+            .find(s => s.innerText.includes('--tw'));
+
+        if (!tailwindStyle) {
+            alert("Tailwind CDN <style> block not found on this admin page.");
+            return;
+        }
+
+        const css = tailwindStyle.innerText;
+
+        const res = await fetch('/wp-json/tailwind-cache/v1/save', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-WP-Nonce': (typeof wpApiSettings !== 'undefined') ? wpApiSettings.nonce : ''
+            },
+            body: JSON.stringify({
+                type: 'theme-options',
+                post_id: 0,
+                post_type: '',
+                css
+            })
+        });
+
+        if (res.ok) {
+            alert("Tailwind CSS successfully regenerated!");
+        } else {
+            alert("Failed to regenerate Tailwind CSS.");
+        }
+    });
+    </script>
     <?php
 }
 
