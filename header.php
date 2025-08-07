@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="profile" href="https://gmpg.org/xfn/11">
 
-    <?php if (!is_user_logged_in()) {
+    <?php if (is_user_logged_in()) {
        echo '<script src="https://cdn.tailwindcss.com"></script>';
     } ?>
     
