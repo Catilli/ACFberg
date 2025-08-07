@@ -1,157 +1,183 @@
 <?php
 /**
- * ACF Options Pages
+ * Custom Options Pages (Alternative to ACF Options Pages)
  */
 
-if (function_exists('acf_add_options_page')) {
-    acf_add_options_page(array(
-        'page_title' => 'Theme Options',
-        'menu_title' => 'Theme Options',
-        'menu_slug' => 'theme-options',
-        'capability' => 'edit_posts',
-        'redirect' => false
-    ));
+/**
+ * Add custom admin menu pages
+ */
+function add_custom_options_pages() {
+    // Add main options page
+    add_menu_page(
+        'Theme Options',           // Page title
+        'Theme Options',           // Menu title
+        'edit_posts',              // Capability
+        'theme-options',           // Menu slug
+        'render_theme_options_page', // Callback function
+        'dashicons-admin-generic', // Icon
+        60                         // Position
+    );
     
-    acf_add_options_sub_page(array(
-        'page_title' => 'Tailwind CSS Manager',
-        'menu_title' => 'Tailwind CSS',
-        'parent_slug' => 'theme-options',
-        'capability' => 'edit_posts'
-    ));
+    // Add sub-page for Tailwind CSS
+    add_submenu_page(
+        'theme-options',           // Parent slug
+        'Tailwind CSS Manager',    // Page title
+        'Tailwind CSS',            // Menu title
+        'edit_posts',              // Capability
+        'tailwind-css-manager',    // Menu slug
+        'render_tailwind_css_page' // Callback function
+    );
+}
+add_action('admin_menu', 'add_custom_options_pages');
+
+/**
+ * Render the main theme options page
+ */
+function render_theme_options_page() {
+    ?>
+    <div class="wrap">
+        <h1>Theme Options</h1>
+        <p>Welcome to the theme options page. Use the submenu to access specific settings.</p>
+        
+        <div class="card">
+            <h2>Quick Actions</h2>
+            <p><a href="<?php echo admin_url('admin.php?page=tailwind-css-manager'); ?>" class="button button-primary">Manage Tailwind CSS</a></p>
+        </div>
+    </div>
+    <?php
 }
 
 /**
- * Add custom fields for Tailwind CSS management
+ * Render the Tailwind CSS manager page
  */
-add_action('acf/init', function() {
-    if (function_exists('acf_add_local_field_group')) {
-        acf_add_local_field_group(array(
-            'key' => 'group_tailwind_css_manager',
-            'title' => 'Tailwind CSS Manager',
-            'fields' => array(
-                array(
-                    'key' => 'field_tailwind_css_status',
-                    'label' => 'CSS Status',
-                    'name' => 'tailwind_css_status',
-                    'type' => 'message',
-                    'message' => 'This field will be populated dynamically',
-                    'wrapper' => array(
-                        'width' => '100',
-                        'class' => '',
-                        'id' => ''
-                    )
-                ),
-                array(
-                    'key' => 'field_manual_capture',
-                    'label' => 'Manual Capture',
-                    'name' => 'manual_capture',
-                    'type' => 'button_group',
-                    'choices' => array(
-                        'capture' => 'Capture Current CSS',
-                        'clear' => 'Clear Stored CSS'
-                    ),
-                    'default_value' => '',
-                    'return_format' => 'value',
-                    'allow_null' => 0,
-                    'layout' => 'horizontal'
-                ),
-                array(
-                    'key' => 'field_stored_css_preview',
-                    'label' => 'Stored CSS Preview',
-                    'name' => 'stored_css_preview',
-                    'type' => 'textarea',
-                    'readonly' => 1,
-                    'rows' => 20,
-                    'wrapper' => array(
-                        'width' => '100',
-                        'class' => '',
-                        'id' => ''
-                    )
-                )
-            ),
-            'location' => array(
-                array(
-                    array(
-                        'param' => 'options_page',
-                        'operator' => '==',
-                        'value' => 'theme-options_page_tailwind-css'
-                    )
-                )
-            ),
-            'menu_order' => 0,
-            'position' => 'normal',
-            'style' => 'default',
-            'label_placement' => 'top',
-            'instruction_placement' => 'label',
-            'hide_on_screen' => '',
-            'active' => true,
-            'description' => ''
-        ));
-    }
-});
-
-/**
- * Handle manual capture and clear actions
- */
-add_action('acf/save_post', function($post_id) {
-    if ($post_id === 'options') {
-        $manual_capture = get_field('manual_capture', 'option');
-        
-        if ($manual_capture === 'capture') {
-            // Trigger CSS capture
-            do_action('tailwind_manual_capture');
-            
-            // Clear the field
-            update_field('manual_capture', '', 'option');
-        } elseif ($manual_capture === 'clear') {
-            // Clear stored CSS
+function render_tailwind_css_page() {
+    // Handle form submissions
+    if (isset($_POST['action']) && $_POST['action'] === 'tailwind_css_action') {
+        if (isset($_POST['capture_css'])) {
+            update_option('tailwind_force_capture', true);
+            echo '<div class="notice notice-success"><p>CSS capture triggered! Refresh the page to see the captured CSS.</p></div>';
+        } elseif (isset($_POST['clear_css'])) {
             delete_option('tailwind_captured_css');
             delete_option('tailwind_css_last_updated');
             delete_option('tailwind_visited_pages');
-            
-            // Clear the field
-            update_field('manual_capture', '', 'option');
+            echo '<div class="notice notice-success"><p>Stored CSS has been cleared.</p></div>';
         }
     }
-}, 20);
-
-/**
- * Populate dynamic fields
- */
-add_filter('acf/load_value/name=tailwind_css_status', function($value) {
-    $last_updated = get_option('tailwind_css_last_updated', 0);
-    $stored_css = get_stored_tailwind_css();
     
-    if ($last_updated > 0 && !empty($stored_css)) {
-        $date = date('Y-m-d H:i:s', $last_updated);
-        $size = strlen($stored_css);
-        return "✅ CSS captured on {$date} ({$size} characters)";
-    } else {
-        return "⚠️ No CSS captured yet";
-    }
-});
-
-add_filter('acf/load_value/name=stored_css_preview', function($value) {
-    return get_stored_tailwind_css();
-});
-
-/**
- * Add visited pages info to the status field
- */
-add_filter('acf/load_value/name=tailwind_css_status', function($value) {
     $last_updated = get_option('tailwind_css_last_updated', 0);
     $stored_css = get_stored_tailwind_css();
     $visited_pages = get_option('tailwind_visited_pages', array());
+    ?>
     
-    if ($last_updated > 0 && !empty($stored_css)) {
-        $date = date('Y-m-d H:i:s', $last_updated);
-        $size = strlen($stored_css);
-        $page_count = count($visited_pages);
-        return "✅ CSS captured on {$date} ({$size} characters, {$page_count} pages visited)";
-    } else {
-        return "⚠️ No CSS captured yet";
-    }
-});
+    <div class="wrap">
+        <h1>Tailwind CSS Manager</h1>
+        
+        <!-- Status Card -->
+        <div class="card">
+            <h2>CSS Status</h2>
+            <?php if ($last_updated > 0 && !empty($stored_css)): ?>
+                <p><strong>✅ CSS captured on:</strong> <?php echo date('Y-m-d H:i:s', $last_updated); ?></p>
+                <p><strong>Size:</strong> <?php echo strlen($stored_css); ?> characters</p>
+                <p><strong>Pages visited:</strong> <?php echo count($visited_pages); ?></p>
+            <?php else: ?>
+                <p><strong>⚠️ No CSS captured yet</strong></p>
+            <?php endif; ?>
+        </div>
+        
+        <!-- Actions Card -->
+        <div class="card">
+            <h2>Actions</h2>
+            <form method="post">
+                <input type="hidden" name="action" value="tailwind_css_action">
+                <p>
+                    <button type="submit" name="capture_css" class="button button-primary">Capture Current CSS</button>
+                    <button type="submit" name="clear_css" class="button button-secondary" onclick="return confirm('Are you sure you want to clear all stored CSS?')">Clear Stored CSS</button>
+                </p>
+            </form>
+        </div>
+        
+        <!-- CSS Preview Card -->
+        <?php if (!empty($stored_css)): ?>
+        <div class="card">
+            <h2>Stored CSS Preview</h2>
+            <textarea readonly style="width: 100%; height: 400px; font-family: monospace; font-size: 12px;"><?php echo esc_textarea($stored_css); ?></textarea>
+        </div>
+        <?php endif; ?>
+        
+        <!-- Visited Pages Card -->
+        <?php if (!empty($visited_pages)): ?>
+        <div class="card">
+            <h2>Visited Pages (<?php echo count($visited_pages); ?>)</h2>
+            <ul>
+                <?php foreach ($visited_pages as $page): ?>
+                    <li><?php echo esc_url($page); ?></li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+        <?php endif; ?>
+    </div>
+    <?php
+}
+
+/**
+ * Alternative 2: Using WordPress Settings API
+ */
+function register_theme_settings() {
+    register_setting('theme_options_group', 'theme_options');
+    
+    add_settings_section(
+        'theme_options_section',
+        'Theme Settings',
+        'theme_options_section_callback',
+        'theme-options'
+    );
+    
+    add_settings_field(
+        'site_logo',
+        'Site Logo URL',
+        'site_logo_callback',
+        'theme-options',
+        'theme_options_section'
+    );
+}
+// Uncomment to use Settings API instead
+// add_action('admin_init', 'register_theme_settings');
+
+function theme_options_section_callback() {
+    echo '<p>Configure your theme settings below:</p>';
+}
+
+function site_logo_callback() {
+    $options = get_option('theme_options');
+    $logo_url = isset($options['site_logo']) ? $options['site_logo'] : '';
+    echo '<input type="url" name="theme_options[site_logo]" value="' . esc_attr($logo_url) . '" class="regular-text" />';
+    echo '<p class="description">Enter the URL for your site logo</p>';
+}
+
+/**
+ * Alternative 3: Using Custom Post Types for Options
+ */
+function create_options_post_type() {
+    register_post_type('theme_option', array(
+        'labels' => array(
+            'name' => 'Theme Options',
+            'singular_name' => 'Theme Option'
+        ),
+        'public' => false,
+        'show_ui' => true,
+        'show_in_menu' => 'theme-options',
+        'supports' => array('title', 'editor', 'custom-fields'),
+        'capability_type' => 'post',
+        'capabilities' => array(
+            'create_posts' => 'edit_posts',
+            'edit_post' => 'edit_posts',
+            'read_post' => 'edit_posts',
+            'delete_post' => 'edit_posts'
+        )
+    ));
+}
+// Uncomment to use Custom Post Type approach
+// add_action('init', 'create_options_post_type');
 
 /**
  * Manual capture action handler
