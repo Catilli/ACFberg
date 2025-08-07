@@ -36,16 +36,17 @@ This theme implements a unique approach to using Tailwind CSS:
 
 ```
 functions/
-├── class-system.php      # Main Tailwind capture system
-├── acf-options.php       # Admin interface for CSS management
-└── script-system.php     # Dynamic script loading
+├── options.php           # Admin interface for CSS management
+├── acf-functions.php     # ACF helper functions
+├── script-system.php     # Dynamic script loading
+└── setup.php            # Theme setup and menus
 ```
 
 ### Key Functions
 
-- `capture_tailwind_css()`: Captures CSS from admin users
-- `inject_stored_css()`: Serves stored CSS to frontend users
 - `get_stored_tailwind_css()`: Retrieves captured CSS from options
+- `enqueue_tailwind_for_logged_in()`: Loads CDN for logged-in users
+- `inject_stored_css_for_frontend()`: Serves stored CSS to frontend users
 
 ### Storage
 
