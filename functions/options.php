@@ -160,4 +160,4 @@ add_action('tailwind_manual_capture', function() {
     // This will be triggered when the capture button is clicked
     // The actual capture happens on the next page load
     update_option('tailwind_force_capture', true);
-}); 
+});

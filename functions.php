@@ -12,7 +12,8 @@ function get_text_domain() {
 require_once get_template_directory() . '/functions/setup.php';           // Theme setup & menus
 require_once get_template_directory() . '/functions/class-system.php';    // CSS class processing
 require_once get_template_directory() . '/functions/script-system.php';   // Script enqueuing
-require_once get_template_directory() . '/functions/acf-options.php';     // ACF options pages
+require_once get_template_directory() . '/functions/acf-functions.php';   // ACF helper functions
+require_once get_template_directory() . '/functions/options.php';         // ACF options pages
 require_once get_template_directory() . '/functions/block-patterns.php';  // Block patterns
 require_once get_template_directory() . '/functions/disable-comments.php'; // Disable comments
 
