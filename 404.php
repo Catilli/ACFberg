@@ -23,7 +23,7 @@ defined( 'ABSPATH' ) || exit;
 <body <?php body_class(); ?>>
 <?php wp_body_open(); ?>
 
-<div class="min-h-screen bg-gradient-to-br from-red-50 to-pink-100 flex items-center justify-center p-8">
+<div class="min-h-screen bg-gradient-to-br from-blue-900 to-indigo-900 flex items-center justify-center p-8">
     <div class="max-w-md mx-auto text-center">
         <div class="bg-white rounded-lg shadow-lg p-8">
             <h1 class="text-6xl font-bold text-red-500 mb-4">404</h1>
