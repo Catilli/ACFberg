@@ -38,8 +38,6 @@ function tailwind_cache_get_filename($type = null, $post_id = null, $post_type =
         return 'single.css';  // Generic file for all custom post types
     } elseif (is_search()) {
         return 'search.css';
-    } elseif (is_404()) {
-        return '404.css';
     } elseif (is_archive()) {
         return 'archive.css';
     }
@@ -77,8 +75,6 @@ function tailwind_cache_save_css($request) {
         $file = 'archive.css';
     } elseif ($type === 'search') {
         $file = 'search.css';
-    } elseif ($type === '404') {
-        $file = '404.css';
     } elseif ($type === 'default') {
         $file = 'default.css';
     } elseif ($type === 'theme-options') {

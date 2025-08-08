@@ -82,8 +82,6 @@
             echo "return 'archive';";
         } elseif (is_search()) {
             echo "return 'search';";
-        } elseif (is_404()) {
-            echo "return '404';";
         } else {
             echo "return 'default';";
         }

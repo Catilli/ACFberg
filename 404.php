@@ -9,9 +9,18 @@
 
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
-
-get_header(); 
 ?>
+<!DOCTYPE html>
+<html <?php language_attributes(); ?>>
+<head>
+    <meta charset="<?php bloginfo('charset'); ?>">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><?php wp_title('|', true, 'right'); ?></title>
+    <?php wp_head(); ?>
+</head>
+
+<body <?php body_class(); ?>>
+<?php wp_body_open(); ?>
 
 <div class="min-h-screen bg-gradient-to-br from-red-50 to-pink-100 flex items-center justify-center p-8">
     <div class="max-w-md mx-auto text-center">
@@ -34,6 +43,7 @@ get_header();
     </div>
 </div>
 
-<?php
-get_footer();
-?>
+<?php wp_footer(); ?>
+
+</body>
+</html>
