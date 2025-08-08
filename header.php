@@ -8,6 +8,13 @@
     <?php wp_head(); ?>
     
     <?php if (is_user_logged_in()): ?>
+    <!-- Add wpApiSettings for REST API calls -->
+    <script>
+    window.wpApiSettings = {
+        nonce: '<?php echo wp_create_nonce('wp_rest'); ?>'
+    };
+    </script>
+    
     <!-- Load Tailwind CDN for logged-in users -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -38,7 +45,7 @@
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-WP-Nonce': (typeof wpApiSettings !== 'undefined') ? wpApiSettings.nonce : ''
+                    'X-WP-Nonce': '<?php echo wp_create_nonce('wp_rest'); ?>'
                 },
                 body: JSON.stringify({
                     type: getPageType(),
@@ -49,7 +56,11 @@
             });
             
             if (res.ok) {
-                console.log('CSS saved for page type:', getPageType());
+                const result = await res.json();
+                console.log('CSS saved for page type:', getPageType(), 'as', result.saved);
+            } else {
+                const error = await res.json();
+                console.log('Error saving CSS:', error);
             }
         } catch (error) {
             console.log('Error saving CSS:', error);

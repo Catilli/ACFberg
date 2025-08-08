@@ -14,13 +14,6 @@ add_action('wp_head', function () {
         $css = file_get_contents($path);
         echo "<style id='tailwind-inline-css-{$file_name}'>\n" . $css . "\n</style>";
     }
-    
-    // Also load theme-options.css if it exists (for global styles)
-    $theme_options_path = get_stylesheet_directory() . '/cache/theme-options.css';
-    if (file_exists($theme_options_path)) {
-        $theme_css = file_get_contents($theme_options_path);
-        echo "<style id='tailwind-inline-css-theme-options'>\n" . $theme_css . "\n</style>";
-    }
 });
 
 // Get appropriate filename for current page/view
@@ -59,7 +52,7 @@ add_action('rest_api_init', function () {
         'methods' => 'POST',
         'callback' => 'tailwind_cache_save_css',
         'permission_callback' => function () {
-            return current_user_can('manage_options');
+            return is_user_logged_in() && current_user_can('edit_posts');
         }
     ]);
 });
