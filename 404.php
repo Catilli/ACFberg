@@ -23,7 +23,7 @@ defined( 'ABSPATH' ) || exit;
 <body <?php body_class(); ?>>
 <?php wp_body_open(); ?>
 
-<div class="min-h-screen bg-gradient-to-br from-blue-900 to-indigo-900 flex items-center justify-center p-8">
+<div class="min-h-screen bg-gradient-to-br from-slate-900 to-blue-950 flex items-center justify-center p-8">
     <div class="max-w-md mx-auto text-center">
         <div class="bg-white rounded-lg shadow-lg p-8">
             <h1 class="text-6xl font-bold text-red-500 mb-4">404</h1>
@@ -34,11 +34,6 @@ defined( 'ABSPATH' ) || exit;
                 <a href="<?php echo esc_url(home_url('/')); ?>" class="inline-block bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg transition-colors duration-200">
                     <?php esc_html_e('Go to Homepage', get_text_domain()); ?>
                 </a>
-                
-                <div class="text-sm text-gray-500">
-                    <p><?php esc_html_e('Or try searching for what you need:', get_text_domain()); ?></p>
-                    <?php get_search_form(); ?>
-                </div>
             </div>
         </div>
     </div>
