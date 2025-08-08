@@ -31,16 +31,24 @@ function render_theme_options_page() {
         <h1>Theme Options</h1>
         <p>Welcome to the theme options page. Use the submenu to access specific settings.</p>
         <hr>
-        <h2>Theme CSS Regeneration</h2>
-        <p>This will capture Tailwind CSS from the frontend and save it for logged-out users.</p>
+        <h2>Tailwind CSS Cache Management</h2>
+        <p>The system automatically captures Tailwind CSS for each page type when you visit them while logged in.</p>
         
         <div class="notice notice-info">
-            <h3>CSS Regeneration</h3>
-            <p>Capture Tailwind CSS from the frontend for logged-out users:</p>
+            <h3>How it works:</h3>
+            <p>When you visit any page while logged in, Tailwind CSS is automatically captured and saved to cache files:</p>
             
             <div class="card">
-                <h4>Capture from Frontend</h4>
-                <p>Visit your frontend while logged in, then capture the Tailwind CSS.</p>
+                <h4>Automatic CSS Capture</h4>
+                <p>CSS is captured and saved for each page type:</p>
+                <ul style="margin-left: 20px; list-style: disc;">
+                    <li><strong>Homepage:</strong> home.css</li>
+                    <li><strong>All Posts & Custom Post Types:</strong> single.css</li>
+                    <li><strong>Individual Pages:</strong> page-{page_id}.css</li>
+                    <li><strong>Archives:</strong> archive.css</li>
+                    <li><strong>Search:</strong> search.css</li>
+                    <li><strong>404:</strong> 404.css</li>
+                </ul>
                 <div class="button-group">
                     <a href="<?php echo home_url(); ?>" target="_blank" class="button button-primary">Visit Frontend</a>
                     <button id="capture-frontend-btn" class="button button-secondary">Capture CSS</button>

@@ -6,6 +6,7 @@
 add_action('wp_head', function () {
     if (is_user_logged_in()) return;
 
+    // Get appropriate CSS file for current page
     $file_name = tailwind_cache_get_filename();
     $path = get_stylesheet_directory() . '/cache/' . $file_name;
 
@@ -14,7 +15,7 @@ add_action('wp_head', function () {
         echo "<style id='tailwind-inline-css-{$file_name}'>\n" . $css . "\n</style>";
     }
     
-    // Also load theme-options.css if it exists
+    // Also load theme-options.css if it exists (for global styles)
     $theme_options_path = get_stylesheet_directory() . '/cache/theme-options.css';
     if (file_exists($theme_options_path)) {
         $theme_css = file_get_contents($theme_options_path);
@@ -28,18 +29,20 @@ function tailwind_cache_get_filename($type = null, $post_id = null, $post_type =
     if ($type && $post_id) {
         if ($type === 'page') {
             return 'page-' . $post_id . '.css';
-        } elseif ($type === 'posttype' && $post_type) {
-            return sanitize_key($post_type) . '.css';
+        } elseif ($type === 'single') {
+            return 'single.css';  // Generic file for all posts
         }
     }
     
     // Fallback to current page detection
-    if (is_page()) {
-        return 'page-' . get_the_ID() . '.css';
+    if (is_home() || is_front_page()) {
+        return 'home.css';
     } elseif (is_singular('post')) {
-        return 'post.css';
+        return 'single.css';  // Generic file for all posts
+    } elseif (is_singular('page')) {
+        return 'page-' . get_the_ID() . '.css';
     } elseif (is_singular()) {
-        return get_post_type() . '.css';
+        return 'single.css';  // Generic file for all custom post types
     } elseif (is_search()) {
         return 'search.css';
     } elseif (is_404()) {
@@ -70,16 +73,25 @@ function tailwind_cache_save_css($request) {
         return new WP_Error('no_css', 'No CSS provided', ['status' => 400]);
     }
 
+    // Determine filename based on type
     if ($type === 'page' && $post_id) {
         $file = "page-{$post_id}.css";
-    } elseif ($type === 'posttype' && !empty($request['post_type'])) {
-        $file = sanitize_key($request['post_type']) . '.css';
-    } elseif (in_array($type, ['archive', 'search', '404'])) {
-        $file = $type . '.css';
+    } elseif ($type === 'single') {
+        $file = 'single.css';  // Generic file for all posts
+    } elseif ($type === 'home') {
+        $file = 'home.css';
+    } elseif ($type === 'archive') {
+        $file = 'archive.css';
+    } elseif ($type === 'search') {
+        $file = 'search.css';
+    } elseif ($type === '404') {
+        $file = '404.css';
+    } elseif ($type === 'default') {
+        $file = 'default.css';
     } elseif ($type === 'theme-options') {
         $file = 'theme-options.css';
     } else {
-        return new WP_Error('invalid_type', 'Invalid type or missing post ID/type', ['status' => 400]);
+        return new WP_Error('invalid_type', 'Invalid type or missing post ID', ['status' => 400]);
     }
 
     $dir = get_stylesheet_directory() . '/cache/';

@@ -11,19 +11,73 @@
     <!-- Load Tailwind CDN for logged-in users -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-    // Capture CSS after Tailwind loads
+    // Capture CSS after Tailwind loads and save to server
     document.addEventListener('DOMContentLoaded', function() {
         setTimeout(function() {
             const tailwindStyle = [...document.querySelectorAll('style')]
                 .find(s => s.innerText.includes('--tw'));
             
             if (tailwindStyle) {
+                const css = tailwindStyle.innerText;
+                
                 // Store CSS in localStorage for admin capture
-                localStorage.setItem('tailwind_css', tailwindStyle.innerText);
-                console.log('Tailwind CSS captured and stored');
+                localStorage.setItem('tailwind_css', css);
+                
+                // Automatically save CSS to server for this page type
+                savePageCSS(css);
+                
+                console.log('Tailwind CSS captured and saved for this page');
             }
         }, 1000);
     });
+    
+    // Function to save CSS for current page type
+    async function savePageCSS(css) {
+        try {
+            const res = await fetch('/wp-json/tailwind-cache/v1/save', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-WP-Nonce': (typeof wpApiSettings !== 'undefined') ? wpApiSettings.nonce : ''
+                },
+                body: JSON.stringify({
+                    type: getPageType(),
+                    post_id: <?php echo is_singular() ? get_the_ID() : 0; ?>,
+                    post_type: '<?php echo get_post_type(); ?>',
+                    css: css
+                })
+            });
+            
+            if (res.ok) {
+                console.log('CSS saved for page type:', getPageType());
+            }
+        } catch (error) {
+            console.log('Error saving CSS:', error);
+        }
+    }
+    
+    // Function to determine page type
+    function getPageType() {
+        <?php
+        if (is_home() || is_front_page()) {
+            echo "return 'home';";
+        } elseif (is_singular('post')) {
+            echo "return 'single';";
+        } elseif (is_singular('page')) {
+            echo "return 'page';";
+        } elseif (is_singular()) {
+            echo "return 'single';";  // All custom post types use single.css
+        } elseif (is_archive()) {
+            echo "return 'archive';";
+        } elseif (is_search()) {
+            echo "return 'search';";
+        } elseif (is_404()) {
+            echo "return '404';";
+        } else {
+            echo "return 'default';";
+        }
+        ?>
+    }
     </script>
     <?php endif; ?>
 </head>
