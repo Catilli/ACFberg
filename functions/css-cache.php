@@ -16,7 +16,17 @@ add_action('wp_head', function () {
 });
 
 // Get appropriate filename for current page/view
-function tailwind_cache_get_filename() {
+function tailwind_cache_get_filename($type = null, $post_id = null, $post_type = null) {
+    // If parameters are provided, use them for specific file naming
+    if ($type && $post_id) {
+        if ($type === 'page') {
+            return 'page-' . $post_id . '.css';
+        } elseif ($type === 'posttype' && $post_type) {
+            return sanitize_key($post_type) . '.css';
+        }
+    }
+    
+    // Fallback to current page detection
     if (is_page()) {
         return 'page-' . get_the_ID() . '.css';
     } elseif (is_singular('post')) {

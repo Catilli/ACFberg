@@ -30,31 +30,4 @@ add_action('admin_enqueue_scripts', function () {
     ]);
 });
 
-add_action('rest_api_init', function () {
-    register_rest_route('tailwind-cache/v1', '/save', [
-        'methods'  => 'POST',
-        'callback' => 'tailwind_cache_save',
-        'permission_callback' => function () {
-            return current_user_can('manage_options');
-        },
-    ]);
-});
-
-function tailwind_cache_save($request) {
-    $css = $request->get_param('css');
-    $type = $request->get_param('type');
-    $post_id = (int) $request->get_param('post_id');
-    $post_type = sanitize_key($request->get_param('post_type'));
-
-    // Save logic here: you can reuse your existing file save function
-    $filename = tailwind_cache_get_filename($type, $post_id, $post_type);
-    $path = get_stylesheet_directory() . '/cache/' . $filename;
-
-    if (!file_exists(dirname($path))) {
-        wp_mkdir_p(dirname($path));
-    }
-
-    file_put_contents($path, $css);
-
-    return new WP_REST_Response(['success' => true, 'file' => $filename], 200);
-}
+// Note: REST API route for tailwind-cache/v1/save is handled in css-cache.php

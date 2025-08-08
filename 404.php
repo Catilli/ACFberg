@@ -1,1 +1,39 @@
 <?php
+/**
+ * The template for displaying 404 pages (not found)
+ *
+ * @link https://codex.wordpress.org/Creating_an_Error_404_Page
+ *
+ * @package ACFberg
+ */
+
+// Exit if accessed directly.
+defined( 'ABSPATH' ) || exit;
+
+get_header(); 
+?>
+
+<div class="min-h-screen bg-gradient-to-br from-red-50 to-pink-100 flex items-center justify-center p-8">
+    <div class="max-w-md mx-auto text-center">
+        <div class="bg-white rounded-lg shadow-lg p-8">
+            <h1 class="text-6xl font-bold text-red-500 mb-4">404</h1>
+            <h2 class="text-2xl font-semibold text-gray-900 mb-4"><?php esc_html_e('Page Not Found', get_text_domain()); ?></h2>
+            <p class="text-gray-600 mb-8"><?php esc_html_e('The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.', get_text_domain()); ?></p>
+            
+            <div class="space-y-4">
+                <a href="<?php echo esc_url(home_url('/')); ?>" class="inline-block bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg transition-colors duration-200">
+                    <?php esc_html_e('Go to Homepage', get_text_domain()); ?>
+                </a>
+                
+                <div class="text-sm text-gray-500">
+                    <p><?php esc_html_e('Or try searching for what you need:', get_text_domain()); ?></p>
+                    <?php get_search_form(); ?>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php
+get_footer();
+?>
