@@ -25,7 +25,7 @@ defined( 'ABSPATH' ) || exit;
 
 <div class="min-h-screen bg-gradient-to-br from-slate-900 to-blue-950 flex items-center justify-center p-8">
     <div class="max-w-md mx-auto text-center">
-        <div class="bg-white rounded-lg shadow-lg p-8">
+        <div class="bg-white rounded-lg shadow-lg p-8" style="box-shadow: 0 10px 25px -5px rgba(245, 158, 11, 0.3), 0 10px 10px -5px rgba(245, 158, 11, 0.2);">
             <h1 class="text-6xl font-bold text-red-500 mb-4">404</h1>
             <h2 class="text-2xl font-semibold text-gray-900 mb-4"><?php esc_html_e('Page Not Found', get_text_domain()); ?></h2>
             <p class="text-gray-600 mb-8"><?php esc_html_e('The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.', get_text_domain()); ?></p>
