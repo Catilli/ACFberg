@@ -32,7 +32,8 @@ defined( 'ABSPATH' ) || exit;
         <!-- Hero Section -->
         <div class="text-center mb-12">
             <h1 class="text-5xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 mb-6">
-                ACFberg Theme
+                <span class="sr-only">ACFberg Theme</span>
+                <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/media/default-logo.svg" alt="ACFberg Theme" class="h-16 md:h-20 mx-auto">
             </h1>
             <p class="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
                 Advanced WordPress theme with automatic Tailwind CSS capture and intelligent caching system
