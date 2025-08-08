@@ -34,37 +34,19 @@ function render_theme_options_page() {
         <h2>Theme CSS Regeneration</h2>
         <p>This will capture Tailwind CSS from the frontend and save it for logged-out users.</p>
         
-        <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
-            <h3 class="text-lg font-semibold text-blue-900 mb-3">CSS Regeneration Options</h3>
-            <p class="text-blue-700 mb-4">Choose how you want to regenerate the CSS:</p>
+        <div class="notice notice-info">
+            <h3>CSS Regeneration</h3>
+            <p>Capture Tailwind CSS from the frontend for logged-out users:</p>
             
-            <div class="space-y-4">
-                <!-- Option 1: Capture from frontend -->
-                <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
-                    <h4 class="font-medium text-gray-900 mb-2">Option 1: Capture from Frontend</h4>
-                    <p class="text-sm text-gray-600 mb-3">Visit your frontend while logged in, then capture the Tailwind CSS.</p>
-                    <div class="space-y-2">
-                        <a href="<?php echo home_url(); ?>" target="_blank" class="button button-primary">Visit Frontend</a>
-                        <button id="capture-frontend-btn" class="button button-secondary">Capture CSS</button>
-                        <button id="clear-storage-btn" class="button">Clear Storage</button>
-                    </div>
-                    <div id="storage-status" class="mt-2 text-sm text-gray-600"></div>
+            <div class="card">
+                <h4>Capture from Frontend</h4>
+                <p>Visit your frontend while logged in, then capture the Tailwind CSS.</p>
+                <div class="button-group">
+                    <a href="<?php echo home_url(); ?>" target="_blank" class="button button-primary">Visit Frontend</a>
+                    <button id="capture-frontend-btn" class="button button-secondary">Capture CSS</button>
+                    <button id="clear-storage-btn" class="button">Clear Storage</button>
                 </div>
-                
-                <!-- Option 2: Manual CSS input -->
-                <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
-                    <h4 class="font-medium text-gray-900 mb-2">Option 2: Manual CSS input</h4>
-                    <p class="text-sm text-gray-600 mb-3">Paste your Tailwind CSS here:</p>
-                    <textarea id="manual-css-input" rows="8" class="widefat" placeholder="Paste your Tailwind CSS here..."></textarea>
-                    <button id="regenerate-manual-btn" class="button button-secondary mt-2">Save CSS</button>
-                </div>
-                
-                <!-- Option 3: Use default styles -->
-                <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
-                    <h4 class="font-medium text-gray-900 mb-2">Option 3: Use default styles</h4>
-                    <p class="text-sm text-gray-600 mb-3">Use the default Tailwind styles from style.json.</p>
-                    <button id="regenerate-default-btn" class="button">Use Default Styles</button>
-                </div>
+                <div id="storage-status" class="description"></div>
             </div>
         </div>
         
@@ -74,6 +56,36 @@ function render_theme_options_page() {
             </div>
         </div>
     </div>
+
+    <style>
+    .card {
+        background: #fff;
+        border: 1px solid #ccd0d4;
+        border-radius: 4px;
+        padding: 20px;
+        margin: 20px 0;
+    }
+    .card h4 {
+        margin-top: 0;
+        margin-bottom: 10px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+    .card p {
+        margin-bottom: 15px;
+        color: #646970;
+    }
+    .button-group {
+        margin-bottom: 15px;
+    }
+    .button-group .button {
+        margin-right: 10px;
+    }
+    .description {
+        font-style: italic;
+        color: #646970;
+    }
+    </style>
 
     <script>
     // Function to show status
@@ -144,7 +156,7 @@ function render_theme_options_page() {
         showStatus('Storage cleared', 'info');
     });
     
-    // Option 1: Capture from frontend
+    // Capture from frontend
     document.getElementById('capture-frontend-btn').addEventListener('click', async () => {
         hideStatus();
         showStatus('Capturing CSS from frontend...', 'info');
@@ -166,40 +178,6 @@ function render_theme_options_page() {
             }
         } catch (error) {
             showStatus(`Error: ${error.message}`, 'error');
-        }
-    });
-    
-    // Option 2: Manual CSS input
-    document.getElementById('regenerate-manual-btn').addEventListener('click', async () => {
-        hideStatus();
-        const cssInput = document.getElementById('manual-css-input');
-        const css = cssInput.value.trim();
-        
-        if (!css) {
-            showStatus('Please enter some CSS first.', 'warning');
-            return;
-        }
-        
-        showStatus('Saving manual CSS...', 'info');
-        await saveCSS(css, 'theme-options');
-    });
-    
-    // Option 3: Use default styles
-    document.getElementById('regenerate-default-btn').addEventListener('click', async () => {
-        hideStatus();
-        showStatus('Loading default styles...', 'info');
-        
-        try {
-            const res = await fetch('<?php echo get_template_directory_uri(); ?>/assets/style.json');
-            if (res.ok) {
-                const styleData = await res.json();
-                const css = Object.values(styleData.css).join('\n');
-                await saveCSS(css, 'theme-options');
-            } else {
-                showStatus('Failed to load default styles from style.json', 'error');
-            }
-        } catch (error) {
-            showStatus(`Error loading default styles: ${error.message}`, 'error');
         }
     });
     </script>
