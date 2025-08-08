@@ -13,6 +13,13 @@ add_action('wp_head', function () {
         $css = file_get_contents($path);
         echo "<style id='tailwind-inline-css-{$file_name}'>\n" . $css . "\n</style>";
     }
+    
+    // Also load theme-options.css if it exists
+    $theme_options_path = get_stylesheet_directory() . '/cache/theme-options.css';
+    if (file_exists($theme_options_path)) {
+        $theme_css = file_get_contents($theme_options_path);
+        echo "<style id='tailwind-inline-css-theme-options'>\n" . $theme_css . "\n</style>";
+    }
 });
 
 // Get appropriate filename for current page/view
@@ -69,6 +76,8 @@ function tailwind_cache_save_css($request) {
         $file = sanitize_key($request['post_type']) . '.css';
     } elseif (in_array($type, ['archive', 'search', '404'])) {
         $file = $type . '.css';
+    } elseif ($type === 'theme-options') {
+        $file = 'theme-options.css';
     } else {
         return new WP_Error('invalid_type', 'Invalid type or missing post ID/type', ['status' => 400]);
     }

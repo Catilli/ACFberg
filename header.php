@@ -6,6 +6,26 @@
     <link rel="profile" href="https://gmpg.org/xfn/11">
     
     <?php wp_head(); ?>
+    
+    <?php if (is_user_logged_in()): ?>
+    <!-- Load Tailwind CDN for logged-in users -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    // Capture CSS after Tailwind loads
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() {
+            const tailwindStyle = [...document.querySelectorAll('style')]
+                .find(s => s.innerText.includes('--tw'));
+            
+            if (tailwindStyle) {
+                // Store CSS in localStorage for admin capture
+                localStorage.setItem('tailwind_css', tailwindStyle.innerText);
+                console.log('Tailwind CSS captured and stored');
+            }
+        }, 1000);
+    });
+    </script>
+    <?php endif; ?>
 </head>
 
 <body <?php body_class(); ?>>
