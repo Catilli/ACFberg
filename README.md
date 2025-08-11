@@ -1,4 +1,4 @@
-# ACFberg Theme
+# ACFberg Theme (Working in Progress)
 
 A WordPress theme with advanced Tailwind CSS integration using automatic CSS capture and page-specific caching.
 
